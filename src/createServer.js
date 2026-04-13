@@ -109,7 +109,7 @@ function createServer() {
     const userExists = users.some((u) => u.id === Number(userId));
 
     if (!userExists) {
-      return res.sendStatus(400);
+      return res.sendStatus(404);
     }
 
     const newExpense = {
