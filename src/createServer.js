@@ -12,7 +12,7 @@ function createServer() {
 
   app.use(express.json());
 
-  // USERS
+  // --- USERS ---
 
   app.get('/users', (req, res) => {
     res.json(users);
@@ -69,21 +69,23 @@ function createServer() {
     res.sendStatus(204);
   });
 
-  // EXPENSES
+  // --- EXPENSES ---
 
   app.get('/expenses', (req, res) => {
-    const { userId, category, categories, from, to } = req.query;
+    const { userId, categories, category, from, to } = req.query;
 
     let result = [...expenses];
-
-    const categoryToFilter = category || categories;
 
     if (userId) {
       result = result.filter((e) => e.userId === Number(userId));
     }
 
-    if (categoryToFilter) {
-      result = result.filter((e) => e.category === categoryToFilter);
+    const rawCategories = categories || category;
+
+    if (rawCategories) {
+      const categoryList = rawCategories.split(',').map((c) => c.trim());
+
+      result = result.filter((e) => categoryList.includes(e.category));
     }
 
     if (from) {
