@@ -109,13 +109,14 @@ function createServer() {
     const userExists = users.some((u) => u.id === Number(userId));
 
     if (!userExists) {
-      return res.sendStatus(404);
+      return res.sendStatus(400);
     }
 
     const newExpense = {
       id: nextExpenseId++,
       ...req.body,
       userId: Number(userId),
+      amount: Number(amount),
     };
 
     expenses.push(newExpense);
@@ -139,7 +140,24 @@ function createServer() {
       return res.sendStatus(404);
     }
 
+    if (req.body.userId !== undefined) {
+      const userExists = users.some((u) => u.id === Number(req.body.userId));
+
+      if (!userExists) {
+        return res.sendStatus(400);
+      }
+    }
+
     Object.assign(expense, req.body);
+
+    if (expense.userId) {
+      expense.userId = Number(expense.userId);
+    }
+
+    if (expense.amount) {
+      expense.amount = Number(expense.amount);
+    }
+
     res.json(expense);
   });
 
